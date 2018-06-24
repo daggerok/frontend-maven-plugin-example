@@ -4,6 +4,6 @@
 
 This project contains example of `frontend-maven-plugin` usage
 
-Read link:https://daggerok.github.io/frontend-maven-plugin-example[reference documentation]
+Read link:https://daggerok.github.io/frontend-maven-plugin-example[project reference documentation]
 
 //end::content[]
