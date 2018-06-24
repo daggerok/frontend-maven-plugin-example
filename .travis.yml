@@ -1,6 +1,10 @@
+service:
+- docker
+
 env:
   global:
   - TERM=dumb
+  - secure: sY1NuHntGMar0g3g8aAyrvBDWrdYGMd3qTDlJpCfAqjeXrx+vZWa5/mkl/xkMeezXZeOz8e8XOIOviQAFK7zwSC3RXK9NbpTkzLs4xEO46/XihMAVWYDCbhDTOzZybhTHb/78lkCGfrRWw6qdZnoXNmjPMyIsS5Btf47M+zJuYtnUCHZwKMkxcAWMrMvUQ902vH57qqCXW1434IbAHgDy7ZxKQSvQ1wR9lE4jkFN5LMym6wlKI8E8bAV55G838JLJI3Jxo3AiPZLuwMNAwa6jq8BBQkBRhll1isUQrGn10Jeic4LTY1XG+aypZspdMb7S6Ki1PvOiCBiq3BClxz3YHp7J+4VkS4DcDwRIhioCaV+NI1MaSSVepZ7OghX182dnEEyOQlEL8Gsi9H8+hMpNemwpck7cCFltGeFYjghcwbjMkjWxW8yNCYrsYRcmu5w1f6BQ5431hiyfNiVQoDp0+p9NUR8UQyPI+ebdl+HvVgrjpdGFeqOpkrdgit6waMoVvYwLlV6DU6uqED5KuXT06uwQcYFAlzQMQU2kDEZAi5dlVW77WJvdDzzXeglGs2N1NjVL3S1kMTuH64n04tXNikmM30oTWDQHfrSMXu6rAQ2zMxk5UnPnT7CcV6nTJzdOiI6H3e3bmkqtS+GkdmvnGqAoVgSNfWe1PIXRk8Bdyg=
 
 language: java
 jdk: oraclejdk8
@@ -9,9 +13,31 @@ apt:
   update: true
   packages:
   - bash
+  - tree
+  - docker-ce
+  - python-pip
 
 install: true
-script: ./mvnw clean package deploy
+before_script:
+- sudo pip install docker-compose httpie >/dev/null 2>&1
+- source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
+- stop_any 80
+
+script:
+- ./mvnw process-resources
+- tree ./src/main/resources/public/
+#
+- ./mvnw package deploy
+- bash ./target/*.jar &
+- wait_for 8080
+- http :8080
+- stop_any 8080
+#
+- ./mvnw com.dkanejs.maven.plugins:docker-compose-maven-plugin:1.0.1:up -P docker
+- sleep 35
+- http :8080
+
+after_script: ./mvnw com.dkanejs.maven.plugins:docker-compose-maven-plugin:1.0.1:down -P docker
 
 before_deploy: ./mvnw process-resources
 
@@ -29,3 +55,4 @@ deploy:
 cache:
   directories:
   - $HOME/.m2
+  - $HOME/.docker

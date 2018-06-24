@@ -1,29 +1,23 @@
-version: "2.1"
+version: '2.1'
 
 services:
 
-  app-maven:
+  app:
     restart: unless-stopped
     build:
       context: ../../..
-      dockerfile: ./src/main/docker/maven/Dockerfile
-    volumes: ["app-maven-data:/home/app"]
-    ports: ["8001:8080"]
-    networks: [backing-services]
-
-  app-gradle:
-    restart: unless-stopped
-    build:
-      context: ../../..
-      dockerfile: ./src/main/docker/gradle/Dockerfile
-    volumes: ["app-maven-data:/home/app"]
-    ports: ["8002:8080"]
-    networks: [backing-services]
+      dockerfile: ./src/main/docker/Dockerfile
+    volumes: ['app-data:/home/applicatoin']
+    ports: ['8080:8080']
+    networks:
+      public-net:
+        aliases:
+        - a
+        - app
+        - appplication
 
 volumes:
-  app-maven-data: {}
-  app-gradle-data: {}
+  app-data: {}
 
 networks:
-  backing-services:
-    driver: bridge
+  public-net:
