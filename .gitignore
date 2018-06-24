@@ -2,11 +2,10 @@ src/main/resources/public
 .gradle
 target
 dist
-node_nodules
-src/main/resources/public
+node_modules/
 package-lock.json
 yarn.lock
-*.log
+*.log*
 
 ### STS ###
 .apt_generated
