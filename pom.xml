@@ -206,30 +206,30 @@
         <executions>
           <execution>
             <id>install node and yarn</id>
+            <phase>process-resources</phase>
             <goals>
               <goal>install-node-and-yarn</goal>
             </goals>
-            <phase>process-resources</phase>
           </execution>
           <execution>
             <id>yarn install</id>
             <goals>
               <goal>yarn</goal>
             </goals>
-            <phase>process-resources</phase>
             <configuration>
               <arguments>install</arguments>
             </configuration>
+            <phase>process-resources</phase>
           </execution>
           <execution>
             <id>yarn build</id>
             <goals>
               <goal>yarn</goal>
             </goals>
-            <phase>process-resources</phase>
             <configuration>
               <arguments>build</arguments>
             </configuration>
+            <phase>process-resources</phase>
           </execution>
         </executions>
         <configuration>
