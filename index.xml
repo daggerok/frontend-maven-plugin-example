@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc maxdepth="4"?>
+<?asciidoc-numbered?>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>{root-project-name} ({project-version})</title>
+<date>2018-06-24 01:06:14 UTC</date>
+<author>
+<personname>
+<firstname>Maksim</firstname>
+<surname>Kostromin</surname>
+</personname>
+<email>daggerok@gmail.com</email>
+</author>
+<authorinitials>MK</authorinitials>
+<revhistory>
+<revision>
+<revnumber>{project-version}</revnumber>
+<date>2018-06-24 01:06:14 UTC</date>
+<authorinitials>MK</authorinitials>
+</revision>
+</revhistory>
+</info>
+<preface>
+<title></title>
+<simpara>Travis CI status:
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="https://travis-ci.org/daggerok/{root-project-name}.svg?branch=master"/>
+</imageobject>
+<textobject><phrase>Build Status</phrase></textobject>
+</inlinemediaobject></simpara>
+</preface>
+<chapter xml:id="_introduction">
+<title>Introduction</title>
+<simpara>This project contains example of <literal>frontend-maven-plugin</literal> usage</simpara>
+<simpara>Read <link xl:href="https://daggerok.github.io/frontend-maven-plugin-example">reference documentation</link></simpara>
+</chapter>
+<chapter xml:id="_implementation">
+<title>Implementation</title>
+<simpara>example node.js (angular) project is located in <literal>src/main/js</literal> directory</simpara>
+<formalpara>
+<title>plugion configuration</title>
+<para>
+<programlisting language="xml" linenumbering="unnumbered">&lt;project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="
+         http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+  &lt;build&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;com.github.eirslett&lt;/groupId&gt;
+        &lt;artifactId&gt;frontend-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;1.6&lt;/version&gt;
+        &lt;executions&gt;
+          &lt;execution&gt;
+            &lt;id&gt;install node and yarn&lt;/id&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;install-node-and-yarn&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;phase&gt;process-resources&lt;/phase&gt;
+          &lt;/execution&gt;
+          &lt;execution&gt;
+            &lt;id&gt;yarn install&lt;/id&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;yarn&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;phase&gt;process-resources&lt;/phase&gt;
+            &lt;configuration&gt;
+              &lt;arguments&gt;install&lt;/arguments&gt;
+            &lt;/configuration&gt;
+          &lt;/execution&gt;
+          &lt;execution&gt;
+            &lt;id&gt;yarn build&lt;/id&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;yarn&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;phase&gt;process-resources&lt;/phase&gt;
+            &lt;configuration&gt;
+              &lt;arguments&gt;build&lt;/arguments&gt;
+            &lt;/configuration&gt;
+          &lt;/execution&gt;
+        &lt;/executions&gt;
+        &lt;configuration&gt;
+          &lt;workingDirectory&gt;src/main/js&lt;/workingDirectory&gt;
+          &lt;installDirectory&gt;target&lt;/installDirectory&gt;
+          &lt;nodeVersion&gt;v8.11.3&lt;/nodeVersion&gt;
+          &lt;npmVersion&gt;v6.1.0&lt;/npmVersion&gt;
+          &lt;yarnVersion&gt;v1.7.0&lt;/yarnVersion&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+    &lt;defaultGoal&gt;process-resources&lt;/defaultGoal&gt;
+  &lt;/build&gt;
+&lt;/project&gt;</programlisting>
+</para>
+</formalpara>
+</chapter>
+<chapter xml:id="_test_usage">
+<title>Test usage</title>
+<formalpara>
+<title>build fat jar</title>
+<para>
+<programlisting language="bash" linenumbering="unnumbered">./mvnw clean package</programlisting>
+</para>
+</formalpara>
+<formalpara>
+<title>run app</title>
+<para>
+<programlisting language="bash" linenumbering="unnumbered">npm i -g serve
+serve ./src/main/resources/public/
+open http:127.0.0.1:3000/</programlisting>
+</para>
+</formalpara>
+<formalpara>
+<title>using docker plugin</title>
+<para>
+<screen>./mvnw clean package
+./mvnw com.dkanejs.maven.plugins:docker-compose-maven-plugin:1.0.1:up -P docker
+./mvnw com.dkanejs.maven.plugins:docker-compose-maven-plugin:1.0.1:down -P docker</screen>
+</para>
+</formalpara>
+</chapter>
+<chapter xml:id="_build_documentation">
+<title>Build documentation</title>
+<formalpara>
+<title>build documentation</title>
+<para>
+<programlisting language="bash" linenumbering="unnumbered">./mvnw process-resources</programlisting>
+</para>
+</formalpara>
+</chapter>
+<chapter xml:id="_links">
+<title>Links</title>
+<itemizedlist>
+<listitem>
+<simpara><link xl:href="{github-url}">GitHub repo</link></simpara>
+</listitem>
+<listitem>
+<simpara><link xl:href="https://daggerok.github.io/{root-project-name}">GitHub pages</link></simpara>
+</listitem>
+</itemizedlist>
+</chapter>
+<chapter xml:id="_other_links">
+<title>Other links</title>
+<itemizedlist>
+<listitem>
+<simpara><link xl:href="https://github.com/eirslett/frontend-maven-plugin/wiki">frontend-maven-plugin wiki</link></simpara>
+</listitem>
+<listitem>
+<simpara><link xl:href="https://github.com/eirslett/frontend-maven-plugin">frontend-maven-plugin page</link></simpara>
+</listitem>
+</itemizedlist>
+</chapter>
+</book>
