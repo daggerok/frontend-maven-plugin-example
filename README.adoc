@@ -1,0 +1,9 @@
+= frontend-maven-plugin-example image:https://travis-ci.org/daggerok/frontend-maven-plugin-example.svg?branch=master["Build Status", link="https://travis-ci.org/daggerok/frontend-maven-plugin-example"]
+
+//tag::content[]
+
+This project contains example of `frontend-maven-plugin` usage
+
+Read link:https://daggerok.github.io/frontend-maven-plugin-example[reference documentation]
+
+//end::content[]

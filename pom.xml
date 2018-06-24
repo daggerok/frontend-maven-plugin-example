@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- tag::content[] -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="
+         http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <!-- end::content[] -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+    <java.version>1.8</java.version>
+  </properties>
+
+  <groupId>daggerok</groupId>
+  <artifactId>frontend-maven-plugin-example</artifactId>
+  <version>0.0.1</version>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.0.3.RELEASE</version>
+    <relativePath/>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <distributionManagement>
+    <repository>
+      <id>local-repo</id>
+      <url>file://${project.basedir}/target/local-repo</url>
+    </repository>
+  </distributionManagement>
+
+  <!-- tag::content[] -->
+  <build>
+    <!-- end::content[] -->
+    <defaultGoal>package</defaultGoal>
+
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.0.3.RELEASE</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>1.5.6</version>
+        <executions>
+          <execution>
+            <id>output-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <baseDir>docs</baseDir>
+              <sourceHighlighter>coderay</sourceHighlighter>
+              <backend>html</backend>
+              <attributes>
+                <toc>left</toc>
+                <linkcss>false</linkcss>
+                <doctype>book</doctype>
+                <ruby>erubis</ruby>
+                <encoding>${project.build.sourceEncoding}</encoding>
+                <linkattrs>true</linkattrs>
+                <numbered>true</numbered>
+                <sectanchors>true</sectanchors>
+                <sectlink>true</sectlink>
+                <idprefix/>
+                <docinfo1/>
+                <icons>font</icons>
+                <idseparator>-</idseparator>
+                <setanchors>true</setanchors>
+                <source-highlighter>coderay</source-highlighter>
+                <toc-title>Table of Contents</toc-title>
+                <project-name>${project.artifactId}</project-name>
+                <root-project-name>${project.artifactId}</root-project-name>
+                <project-version>${project.version}</project-version>
+                <github-url>https://github.com/daggerok/${project.artifactId}</github-url>
+              </attributes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>output-docbook</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <backend>docbook</backend>
+              <doctype>book</doctype>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>./docs</sourceDirectory>
+          <headerFooter>true</headerFooter>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>src/main/js/node_modules</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+      <!-- tag::content[] -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>install node and yarn</id>
+            <goals>
+              <goal>install-node-and-yarn</goal>
+            </goals>
+            <phase>process-resources</phase>
+          </execution>
+          <execution>
+            <id>yarn install</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>yarn build</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <arguments>build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <workingDirectory>src/main/js</workingDirectory>
+          <installDirectory>target</installDirectory>
+          <nodeVersion>v8.11.3</nodeVersion>
+          <npmVersion>v6.1.0</npmVersion>
+          <yarnVersion>v1.7.0</yarnVersion>
+        </configuration>
+      </plugin>
+    </plugins>
+    <!-- end::content[] -->
+    <!--
+    tag::content[]
+    <defaultGoal>process-resources</defaultGoal>
+    end::content[]
+    -->
+    <!-- tag::content[] -->
+  </build>
+</project>
+<!-- end::content[] -->

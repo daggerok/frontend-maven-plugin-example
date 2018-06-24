@@ -1,0 +1,31 @@
+env:
+  global:
+  - TERM=dumb
+
+language: java
+jdk: oraclejdk8
+
+apt:
+  update: true
+  packages:
+  - bash
+
+install: true
+script: ./mvnw clean package deploy
+
+before_deploy: ./mvnw process-resources
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  # travis encrypt GITHUB_TOKEN=<your github repo token> --add
+  github-token: "$GITHUB_TOKEN"
+  keep-history: true
+  on:
+    branch: master
+  local-dir: target/generated-docs
+  target_branch: gh-pages
+
+cache:
+  directories:
+  - $HOME/.m2
