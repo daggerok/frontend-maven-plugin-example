@@ -41,7 +41,7 @@ include::../pom.xml[tags=content]
 ----
 npm i -g serve
 serve ./src/main/resources/public/
-open http:127.0.0.1:3000/
+open http://127.0.0.1:3000/
 ----
 
 .using docker plugin
