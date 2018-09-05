@@ -235,9 +235,9 @@
         <configuration>
           <workingDirectory>src/main/js</workingDirectory>
           <installDirectory>target</installDirectory>
-          <nodeVersion>v8.11.3</nodeVersion>
+          <nodeVersion>v8.11.4</nodeVersion>
           <npmVersion>v6.1.0</npmVersion>
-          <yarnVersion>v1.7.0</yarnVersion>
+          <yarnVersion>v1.9.4</yarnVersion>
         </configuration>
       </plugin>
     </plugins>
