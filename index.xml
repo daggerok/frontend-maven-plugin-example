@@ -4,7 +4,7 @@
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
 <info>
 <title>{root-project-name} ({project-version})</title>
-<date>2018-09-04 23:50:50 UTC</date>
+<date>2018-09-05 01:06:06 UTC</date>
 <author>
 <personname>
 <firstname>Maksim</firstname>
@@ -16,7 +16,7 @@
 <revhistory>
 <revision>
 <revnumber>{project-version}</revnumber>
-<date>2018-09-04 23:50:50 UTC</date>
+<date>2018-09-05 01:06:06 UTC</date>
 <authorinitials>MK</authorinitials>
 </revision>
 </revhistory>
@@ -84,9 +84,9 @@
         &lt;configuration&gt;
           &lt;workingDirectory&gt;src/main/js&lt;/workingDirectory&gt;
           &lt;installDirectory&gt;target&lt;/installDirectory&gt;
-          &lt;nodeVersion&gt;v8.11.3&lt;/nodeVersion&gt;
+          &lt;nodeVersion&gt;v8.11.4&lt;/nodeVersion&gt;
           &lt;npmVersion&gt;v6.1.0&lt;/npmVersion&gt;
-          &lt;yarnVersion&gt;v1.7.0&lt;/yarnVersion&gt;
+          &lt;yarnVersion&gt;v1.9.4&lt;/yarnVersion&gt;
         &lt;/configuration&gt;
       &lt;/plugin&gt;
     &lt;/plugins&gt;
