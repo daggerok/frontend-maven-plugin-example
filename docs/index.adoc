@@ -23,7 +23,7 @@ include::../README.adoc[tags=content]
 example node.js (angular) project is located in `src/main/js` directory
 
 .plugion configuration
-[source,xml]
+[source, xml]
 ----
 include::../pom.xml[tags=content]
 ----
@@ -31,30 +31,29 @@ include::../pom.xml[tags=content]
 == Test usage
 
 .build fat jar
-[source,bash]
+[source, bash]
 ----
 ./mvnw clean package
 ----
 
 .run app
-[source,bash]
+[source, bash]
 ----
-npm i -g serve
-serve ./src/main/resources/public/
+npx serve ./src/main/resources/public/
 open http://127.0.0.1:3000/
 ----
 
 .using docker plugin
 ----
 ./mvnw clean package
-./mvnw com.dkanejs.maven.plugins:docker-compose-maven-plugin:1.0.1:up -P docker
-./mvnw com.dkanejs.maven.plugins:docker-compose-maven-plugin:1.0.1:down -P docker
+./mvnw docker-compose:up -P docker
+./mvnw docker-compose:down -P docker
 ----
 
 == Build documentation
 
 .build documentation
-[source,bash]
+[source, bash]
 ----
 ./mvnw process-resources
 ----
