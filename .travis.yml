@@ -1,59 +1,97 @@
+notifications:
+  email: false
+git:
+  quiet: true
+  depth: false
 service:
 - docker
-
 env:
   global:
   - TERM=dumb
   - secure: sY1NuHntGMar0g3g8aAyrvBDWrdYGMd3qTDlJpCfAqjeXrx+vZWa5/mkl/xkMeezXZeOz8e8XOIOviQAFK7zwSC3RXK9NbpTkzLs4xEO46/XihMAVWYDCbhDTOzZybhTHb/78lkCGfrRWw6qdZnoXNmjPMyIsS5Btf47M+zJuYtnUCHZwKMkxcAWMrMvUQ902vH57qqCXW1434IbAHgDy7ZxKQSvQ1wR9lE4jkFN5LMym6wlKI8E8bAV55G838JLJI3Jxo3AiPZLuwMNAwa6jq8BBQkBRhll1isUQrGn10Jeic4LTY1XG+aypZspdMb7S6Ki1PvOiCBiq3BClxz3YHp7J+4VkS4DcDwRIhioCaV+NI1MaSSVepZ7OghX182dnEEyOQlEL8Gsi9H8+hMpNemwpck7cCFltGeFYjghcwbjMkjWxW8yNCYrsYRcmu5w1f6BQ5431hiyfNiVQoDp0+p9NUR8UQyPI+ebdl+HvVgrjpdGFeqOpkrdgit6waMoVvYwLlV6DU6uqED5KuXT06uwQcYFAlzQMQU2kDEZAi5dlVW77WJvdDzzXeglGs2N1NjVL3S1kMTuH64n04tXNikmM30oTWDQHfrSMXu6rAQ2zMxk5UnPnT7CcV6nTJzdOiI6H3e3bmkqtS+GkdmvnGqAoVgSNfWe1PIXRk8Bdyg=
-
 language: java
-jdk: oraclejdk8
-
 addons:
   apt:
     update: true
     packages:
-    - bash
+    - jq
+    - sudo
+    - lsof
+    - curl
+    - pigz
     - tree
     - docker-ce
     - python-pip
-
 install: true
-before_script:
-- sudo pip install docker-compose httpie >/dev/null 2>&1
-- source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
-- stop_any 80
-
-script:
-- ./mvnw process-resources
-- tree ./src/main/resources/public/
-#
-- ./mvnw package deploy
-- bash ./target/*.jar &
-- wait_for 8080
-- http :8080
-- stop_any 8080
-#
-- ./mvnw com.dkanejs.maven.plugins:docker-compose-maven-plugin:1.0.1:up -P docker
-- sleep 35
-- http :8080
-
-after_script: ./mvnw com.dkanejs.maven.plugins:docker-compose-maven-plugin:1.0.1:down -P docker
-
-before_deploy: ./mvnw process-resources
-
-deploy:
-  provider: pages
-  skip-cleanup: true
-  # travis encrypt GITHUB_TOKEN=<your github repo token> --add
-  github-token: "$GITHUB_TOKEN"
-  keep-history: true
-  on:
-    branch: master
-  local-dir: target/generated-docs
-  target_branch: gh-pages
-
 cache:
+  pip: true
+  packages: true
   directories:
-  - $HOME/.m2
+  - src/main/js/node_modules
+  - $HOME/.local/daggerok
   - $HOME/.docker
+  - $HOME/.m2
+before_script:
+- docker-compose version
+- pip install --user `whoami` --upgrade pip
+- pip install --user `whoami` --upgrade docker-compose httpie
+- docker-compose version
+#- source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
+- |
+  if [ ! -f $HOME/.local/daggerok/bash-functions/master/main.bash ] ; then
+    mkdir -p $HOME/.local/daggerok/bash-functions/master ;
+    curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash > $HOME/.local/daggerok/bash-functions/master/main.bash ;
+  fi
+  source $HOME/.local/daggerok/bash-functions/master/main.bash ;
+- stop_any 80
+stages:
+- test
+- deploy
+jobs:
+  include:
+  - stage: test
+    jdk: openjdk8
+    name: test npm openjdk8
+    script:
+    - ./mvnw process-resources
+    - tree ./src/main/resources/public/
+  - stage: test
+    jdk: openjdk8
+    name: test openjdk8
+    script:
+    - ./mvnw package deploy
+    - bash ./target/*.jar &
+    - wait_for 8080
+    - http :8080
+    - http :8080/actuator/health | jq '.'
+    - stop_any 8080
+  - stage: test
+    jdk: openjdk8
+    name: test docker-compose maven plugin openjdk8
+    script:
+    - ./mvnw >/dev/null
+    - ./mvnw docker-compose:up -P docker
+    - wait_healthy_docker_containers 1
+    - http :8080/actuator/health | jq '.'
+    - http :8080
+    - ./mvnw docker-compose:down -P docker
+  - stage: test
+    jdk: openjdk8
+    name: versions update openjdk8
+    script: ./mvnw versions:display-property-updates -U
+  - stage: deploy
+    jdk: openjdk8
+    script: false
+    name: Aciidoctor GitHub Pages openjdk8
+    before_deploy: ./mvnw process-resources >/dev/null
+    deploy:
+      provider: pages
+      skip-cleanup: true
+      # travis encrypt GITHUB_TOKEN=<your github repo token> --add
+      github-token: "$GITHUB_TOKEN"
+      keep-history: true
+      on:
+        branch: master
+        condition: "$TRAVIS_PULL_REQUEST = false"
+      local-dir: target/generated-docs
+      target_branch: gh-pages
