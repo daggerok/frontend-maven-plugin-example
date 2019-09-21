@@ -4,7 +4,7 @@
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
 <info>
 <title>{root-project-name} ({project-version})</title>
-<date>2018-09-05 01:06:06 UTC</date>
+<date>2019-09-21 00:17:36 UTC</date>
 <author>
 <personname>
 <firstname>Maksim</firstname>
@@ -16,7 +16,7 @@
 <revhistory>
 <revision>
 <revnumber>{project-version}</revnumber>
-<date>2018-09-05 01:06:06 UTC</date>
+<date>2019-09-21 00:17:36 UTC</date>
 <authorinitials>MK</authorinitials>
 </revision>
 </revhistory>
@@ -42,28 +42,26 @@
 <formalpara>
 <title>plugion configuration</title>
 <para>
-<programlisting language="xml" linenumbering="unnumbered">&lt;project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="
-         http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+<programlisting language="xml" linenumbering="unnumbered">&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
   &lt;build&gt;
       &lt;plugin&gt;
         &lt;groupId&gt;com.github.eirslett&lt;/groupId&gt;
         &lt;artifactId&gt;frontend-maven-plugin&lt;/artifactId&gt;
-        &lt;version&gt;1.6&lt;/version&gt;
+        &lt;version&gt;${frontend-maven-plugin.version}&lt;/version&gt;
         &lt;executions&gt;
           &lt;execution&gt;
-            &lt;id&gt;install node and yarn&lt;/id&gt;
+            &lt;id&gt;install node and npm&lt;/id&gt;
             &lt;phase&gt;process-resources&lt;/phase&gt;
             &lt;goals&gt;
-              &lt;goal&gt;install-node-and-yarn&lt;/goal&gt;
+              &lt;goal&gt;install-node-and-npm&lt;/goal&gt;
             &lt;/goals&gt;
           &lt;/execution&gt;
           &lt;execution&gt;
-            &lt;id&gt;yarn install&lt;/id&gt;
+            &lt;id&gt;npm install&lt;/id&gt;
             &lt;goals&gt;
-              &lt;goal&gt;yarn&lt;/goal&gt;
+              &lt;goal&gt;npm&lt;/goal&gt;
             &lt;/goals&gt;
             &lt;configuration&gt;
               &lt;arguments&gt;install&lt;/arguments&gt;
@@ -71,12 +69,12 @@
             &lt;phase&gt;process-resources&lt;/phase&gt;
           &lt;/execution&gt;
           &lt;execution&gt;
-            &lt;id&gt;yarn build&lt;/id&gt;
+            &lt;id&gt;npm run build&lt;/id&gt;
             &lt;goals&gt;
-              &lt;goal&gt;yarn&lt;/goal&gt;
+              &lt;goal&gt;npm&lt;/goal&gt;
             &lt;/goals&gt;
             &lt;configuration&gt;
-              &lt;arguments&gt;build&lt;/arguments&gt;
+              &lt;arguments&gt;run build&lt;/arguments&gt;
             &lt;/configuration&gt;
             &lt;phase&gt;process-resources&lt;/phase&gt;
           &lt;/execution&gt;
@@ -84,9 +82,8 @@
         &lt;configuration&gt;
           &lt;workingDirectory&gt;src/main/js&lt;/workingDirectory&gt;
           &lt;installDirectory&gt;target&lt;/installDirectory&gt;
-          &lt;nodeVersion&gt;v8.11.4&lt;/nodeVersion&gt;
-          &lt;npmVersion&gt;v6.1.0&lt;/npmVersion&gt;
-          &lt;yarnVersion&gt;v1.9.4&lt;/yarnVersion&gt;
+          &lt;npmVersion&gt;${frontend-maven-plugin.npmVersion}&lt;/npmVersion&gt;
+          &lt;nodeVersion&gt;${frontend-maven-plugin.nodeVersion}&lt;/nodeVersion&gt;
         &lt;/configuration&gt;
       &lt;/plugin&gt;
     &lt;/plugins&gt;
@@ -107,8 +104,7 @@
 <formalpara>
 <title>run app</title>
 <para>
-<programlisting language="bash" linenumbering="unnumbered">npm i -g serve
-serve ./src/main/resources/public/
+<programlisting language="bash" linenumbering="unnumbered">npx serve ./src/main/resources/public/
 open http://127.0.0.1:3000/</programlisting>
 </para>
 </formalpara>
@@ -116,8 +112,8 @@ open http://127.0.0.1:3000/</programlisting>
 <title>using docker plugin</title>
 <para>
 <screen>./mvnw clean package
-./mvnw com.dkanejs.maven.plugins:docker-compose-maven-plugin:1.0.1:up -P docker
-./mvnw com.dkanejs.maven.plugins:docker-compose-maven-plugin:1.0.1:down -P docker</screen>
+./mvnw docker-compose:up -P docker
+./mvnw docker-compose:down -P docker</screen>
 </para>
 </formalpara>
 </chapter>
